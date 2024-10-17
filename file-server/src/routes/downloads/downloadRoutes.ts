@@ -25,8 +25,15 @@ router.get('/download/:filename', (req: Request, res: Response) => {
   });
 });
 
-router.get('/files', async (req: Request, res: Response) => {
+router.get('/files', async (req: Request, res: Response): Promise<void> => {
   try {
+    const exists = await fs.pathExists(UPLOADS_DIR);
+
+    if (!exists) {
+      res.json([]);
+      return;
+    }
+
     const files = await fs.readdir(UPLOADS_DIR);
 
     const fileList = [];
